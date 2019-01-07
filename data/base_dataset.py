@@ -11,18 +11,18 @@ from abc import ABC, abstractmethod
 class BaseDataset(data.Dataset, ABC):
     """This class is an abstract base class (ABC) for datasets.
 
-    To create a subclass, you need to implement four functions:
-    -- <__init__> (initialize the class, first call BaseDataset.__init__(self, opt))
-    -- <__len__> (return the size of dataset)
-    -- <__getitem__>　(get a data point)
-    -- (optionally) <modify_commandline_options> (add dataset-specific options and set default options).
+    To create a subclass, you need to implement the following four functions:
+    -- <__init__>:                      initialize the class, first call BaseDataset.__init__(self, opt).
+    -- <__len__>:                       return the size of dataset.
+    -- <__getitem__>:                   get a data point.
+    -- <modify_commandline_options>:    (optionally) add dataset-specific options and set default options.
     """
 
     def __init__(self, opt):
         """Initialize the class; save the options in the class
 
         Parameters:
-            opt -- stores all the experiment flags; needs to be a subclass of BaseOptions
+            opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         self.opt = opt
         self.root = opt.dataroot
@@ -32,8 +32,8 @@ class BaseDataset(data.Dataset, ABC):
         """Add new dataset-specific options, and rewrite default values for existing options.
 
         Parameters:
-            parser -- original option parser
-            is_train -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
+            parser          -- original option parser
+            is_train (bool) -- whether training phase or test phase. You can use this flag to add training-specific or test-specific options.
 
         Returns:
             the modified parser.
@@ -61,8 +61,15 @@ class BaseDataset(data.Dataset, ABC):
 def get_transform(opt, grayscale=False, convert=True, crop=True, flip=True):
     """Create a torchvision transformation function
 
-    The type of transformation is defined by option(e.g., [preprocess], [load_size], [crop_size])
+    The type of transformation is defined by option (e.g., [opt.preprocess], [opt.load_size], [opt.crop_size])
     and can be overwritten by arguments such as [convert], [crop], and [flip]
+
+    Parameters:
+        opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
+        grayscale (bool)   -- if convert input RGB image to a grayscale image
+        convert (bool)     -- if convert an image to a tensor array betwen [-1, 1]
+        crop    (bool)     -- if apply cropping
+        flip    (bool)     -- if apply horizontal flippling
     """
     transform_list = []
     if grayscale:
@@ -94,7 +101,12 @@ def get_transform(opt, grayscale=False, convert=True, crop=True, flip=True):
 
 
 def __adjust(img):
-    """Modify the width and height to be multiple of 4
+    """Modify the width and height to be multiple of 4.
+
+    Parameters:
+        img (PIL image) -- input image
+
+    Returns a modified image whose width and height are mulitple of 4.
 
     the size needs to be a multiple of 4,
     because going through generator network may change img size
@@ -117,6 +129,12 @@ def __adjust(img):
 
 def __scale_width(img, target_width):
     """Resize images so that the width of the output image is the same as a target width
+
+    Parameters:
+        img (PIL image)    -- input image
+        target_width (int) -- target image width
+
+    Returns a modified image whose width matches the target image width;
 
     the size needs to be a multiple of 4,
     because going through generator network may change img size

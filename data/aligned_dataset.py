@@ -17,7 +17,7 @@ class AlignedDataset(BaseDataset):
         """Initialize this dataset class.
 
         Parameters:
-            opt -- stores all the experiment flags; needs to be a subclass of BaseOptions
+            opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
         self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
@@ -37,10 +37,10 @@ class AlignedDataset(BaseDataset):
             index - - a random integer for data indexing
 
         Returns a dictionary that contains A, B, A_paths and B_paths
-            A(tensor) - - an image in the input domain
-            B(tensor) - - its corresponding image in the target domain
-            A_paths(str) - - image paths
-            B_paths(str) - - image paths
+            A (tensor) - - an image in the input domain
+            B (tensor) - - its corresponding image in the target domain
+            A_paths (str) - - image paths
+            B_paths (str) - - image paths (same as A_paths)
         """
         # read a image given a random integer index
         AB_path = self.AB_paths[index]
@@ -62,7 +62,6 @@ class AlignedDataset(BaseDataset):
         # call standard transformation function
         A = self.transform_A(A)
         B = self.transform_B(B)
-        print(AB_path, index)
         return {'A': A, 'B': B, 'A_paths': AB_path, 'B_paths': AB_path}
 
     def __len__(self):
